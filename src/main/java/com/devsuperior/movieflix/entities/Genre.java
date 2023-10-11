@@ -1,6 +1,7 @@
 package com.devsuperior.movieflix.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,24 +24,26 @@ public class Genre implements Serializable {
 	private String name;
 
 	@OneToMany(mappedBy = "genre")
-	private List<Movie> movies;
+	private List<Movie> movies = new ArrayList<>();
 
 	public Genre() {
 	}
 
-	public Genre(Long id, String name, List<Movie> movies) {
-		super();
+	public Genre(Long id, String name) {
 		this.id = id;
 		this.name = name;
-		this.movies = movies;
+	}
+	
+	public List<Movie> getMovies() {
+		return movies;
 	}
 
-	public Long getId() {
+	public Long getIdGenre() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setIdGenre(Long idGenre) {
+		this.id = idGenre;
 	}
 
 	public String getName() {
@@ -67,5 +70,6 @@ public class Genre implements Serializable {
 		Genre other = (Genre) obj;
 		return Objects.equals(id, other.id);
 	}
+
 
 }

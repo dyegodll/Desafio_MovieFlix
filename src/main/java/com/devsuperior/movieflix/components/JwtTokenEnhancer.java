@@ -1,4 +1,4 @@
-package com.devsuperior.movieflix.config;
+package com.devsuperior.movieflix.components;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class JwtTokenEnhancer implements TokenEnhancer {
 		//objetos na forma de Map< tipo_chave, tipo_valor >
 		//tipo valor deve ser Object porque aceita qualquer tipo de obj
 		Map<String,Object> map = new HashMap<>();
-		map.put("userFirstName", user.getName());
+		map.put("userName", user.getName());
 		map.put("userId", user.getId());
 		
 		//inserindo obj no token

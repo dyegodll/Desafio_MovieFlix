@@ -36,9 +36,19 @@ public class Review implements Serializable {
 	public Review() {
 	}
 
-	public Review(Long id, String text) {
-		this.id = id;
-		this.text = text;
+	public Review(Long id, String text, User user, Movie movie) {
+		this.id    = id;
+		this.text  = text;
+		this.user  = user;
+		this.movie = movie;
+	}
+	
+	public Movie getMovie() {
+		return movie;
+	}
+
+	public void setMovie(Movie movie) {
+		this.movie = movie;
 	}
 
 	public User getUser() {
@@ -49,12 +59,12 @@ public class Review implements Serializable {
 		this.user = user;
 	}
 
-	public Long getId() {
+	public Long getIdReview() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setIdReview(Long idReview) {
+		this.id = idReview;
 	}
 
 	public String getText() {
@@ -81,5 +91,6 @@ public class Review implements Serializable {
 		Review other = (Review) obj;
 		return Objects.equals(id, other.id);
 	}
+
 
 }

@@ -2,6 +2,7 @@ package com.devsuperior.movieflix.config;
 
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +20,7 @@ public class AppConfig implements Serializable {
 	//JWT_SECRET = jwtSecret (padrão camelCase)
 	//jwt.secret=${JWT_SECRET:MY-JWT-SECRET}, caso o valor não tenha sido defido na variável
 	//use a Coalescência ( : ) para definir o valor padrão ("MY-JWT-SECRET")
-	//@Value("${jwt.secret}")//nome da chave
+	@Value("${jwt.secret}")//nome da chave
 	private String jwtSecret = "MY-JWT-SECRET";
 	
     //componente do Spring

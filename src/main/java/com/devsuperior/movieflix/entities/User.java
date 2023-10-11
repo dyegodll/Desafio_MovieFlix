@@ -1,10 +1,10 @@
 package com.devsuperior.movieflix.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,12 +45,12 @@ public class User implements UserDetails, Serializable {
 	private Set<Role> roles = new HashSet<>();
 
 	@OneToMany(mappedBy = "user")
-	private List<Review> reviews;
+	private List<Review> reviews = new ArrayList<>();
 
 	public User() {
 	}
 
-	public User(Long id, String name, String lastName, String email, String password) {
+	public User(Long id, String name, String email, String password) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
@@ -89,17 +89,20 @@ public class User implements UserDetails, Serializable {
 		this.password = password;
 	}
 
-	public List<Review> getReviews() {
-		return reviews;
-	}
-
 	public Set<Role> getRoles() {
 		return roles;
 	}
 
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(name, id);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
 	}
 
 	@Override
@@ -111,46 +114,52 @@ public class User implements UserDetails, Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		return Objects.equals(name, other.name) && Objects.equals(id, other.id);
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
-	//lista de papéis/perfís atribuídos ao usuário
-	//converte tipo Role em GrantedAuthority a partir da lista roles
-	//para enviar os dados para o AuthorizationServer do JWT(Jason Web Token) através do Spring Security
+	// lista de papéis/perfís atribuídos ao usuário
+	// converte tipo Role em GrantedAuthority a partir da lista roles
+	// para enviar os dados para o AuthorizationServer do JWT(Jason Web Token)
+	// através do Spring Security
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
-		//SimpleGrantedAuthority classe concreta da interface GrantedAuthority
+		// SimpleGrantedAuthority classe concreta da interface GrantedAuthority
 	}
 
-	//nome de credecial do usuário = email
+	// nome de credecial do usuário = email
 	@Override
 	public String getUsername() {
 		return email;
 	}
 
-	//a conta não está expirada?
+	// a conta não está expirada?
 	@Override
 	public boolean isAccountNonExpired() {
 		// sim. a conta não está expirada
 		return true;
 	}
 
-	//a conta não está bloqueada?
+	// a conta não está bloqueada?
 	@Override
 	public boolean isAccountNonLocked() {
 		// sim. a conta não está bloqueada
 		return true;
 	}
 
-	//as credenciais não estão expiradas/inválidas?
+	// as credenciais não estão expiradas/inválidas?
 	@Override
 	public boolean isCredentialsNonExpired() {
 		// sim. a credencial não está expirada
 		return true;
 	}
 
-	//está habilitado?
+	// está habilitado?
 	@Override
 	public boolean isEnabled() {
 		// sim. está habilitado
