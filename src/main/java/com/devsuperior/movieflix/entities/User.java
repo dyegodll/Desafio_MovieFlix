@@ -24,35 +24,38 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.devsuperior.movieflix.entities.Role;
+
 @Entity
-@Table(name = "tb_user")
-public class User implements UserDetails, Serializable {
+@Table(name = "tb_user")  //Anotação que define o nome da tabela no banco de dados
+public class User implements UserDetails, Serializable{
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long   id;
 	private String name;
 
 	@Column(unique = true)
 	private String email;
-
 	private String password;
-
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "tb_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
-
+	
+	@ManyToMany(fetch = FetchType.EAGER)  //Exigência do Spring Security, quando for fazer autenticação de usuário.
+	@JoinTable(name = "tb_user_role",
+		joinColumns = @JoinColumn(name = "user_id"),
+		inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>(); 
+	
 	@OneToMany(mappedBy = "user")
 	private List<Review> reviews = new ArrayList<>();
-
-	public User() {
+	
+	public User() {		
 	}
 
 	public User(Long id, String name, String email, String password) {
+		super();
 		this.id = id;
-		this.name = name;
 		this.email = email;
 		this.password = password;
 	}
@@ -88,7 +91,7 @@ public class User implements UserDetails, Serializable {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	public Set<Role> getRoles() {
 		return roles;
 	}
@@ -121,49 +124,54 @@ public class User implements UserDetails, Serializable {
 			return false;
 		return true;
 	}
+	
+	// Os metodos abaixo são de implementação obrigatória por causa da interface UserDetails do Spring Security.
 
-	// lista de papéis/perfís atribuídos ao usuário
-	// converte tipo Role em GrantedAuthority a partir da lista roles
-	// para enviar os dados para o AuthorizationServer do JWT(Jason Web Token)
-	// através do Spring Security
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		//Este metodo percorre a lista de roles através de um metodo lambda para converter cada elemento role da lista para um GrantedAuthority.
 		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
-		// SimpleGrantedAuthority classe concreta da interface GrantedAuthority
 	}
 
-	// nome de credecial do usuário = email
 	@Override
 	public String getUsername() {
 		return email;
 	}
 
-	// a conta não está expirada?
+	// Metodo para verificar se a conta do usuário não está EXPIRADA. 
+	// Por padrão colocamos true para nunca estar expirada, caso contrário deverá ser implementada uma lógica para verificar se a conta está expirada.
 	@Override
 	public boolean isAccountNonExpired() {
-		// sim. a conta não está expirada
-		return true;
+		return true; 
 	}
 
-	// a conta não está bloqueada?
+	// Metodo para verificar se a conta do usuário não está BLOQUEADA. 
+	// Por padrão colocamos true para nunca estar bloqueada, caso contrário deverá ser implementada uma lógica para verificar se a conta está bloqueada.
 	@Override
 	public boolean isAccountNonLocked() {
-		// sim. a conta não está bloqueada
 		return true;
 	}
 
-	// as credenciais não estão expiradas/inválidas?
+	// Metodo para verificar se as credenciais do usuário não estão EXPIRADAS. 
+	// Por padrão colocamos true para nunca estarem expiradas, caso contrário deverá ser implementada uma lógica para verificar se as credenciais estão expiradas.
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// sim. a credencial não está expirada
 		return true;
 	}
 
-	// está habilitado?
+	// Metodo para verificar se a conta do usuário está HABILITADA. 
+	// Por padrão colocamos true para deixar semprer habilitada, caso contrário deverá ser implementada uma lógica para verificar se a conta está desabilitada.
 	@Override
 	public boolean isEnabled() {
-		// sim. está habilitado
 		return true;
 	}
-
+	
+	public boolean hasRole(String roleName) {
+		for(Role role : roles) {
+			if(role.getAuthority().equals(roleName)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

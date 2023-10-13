@@ -3,7 +3,6 @@ package com.devsuperior.movieflix.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,32 +13,35 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+
 @Entity
-@Table(name = "tb_movie")
-public class Movie implements Serializable {
+@Table(name = "tb_movie")  //Anotação que define o nome da tabela no banco de dados
+public class Movie implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-
 	private String title;
 	private String subTitle;
 	private Integer year;
 	private String imgUrl;
 	private String synopsis;
-
+	
 	@OneToMany(mappedBy = "movie")
 	private List<Review> reviews = new ArrayList<>();
-
+	
 	@ManyToOne
-	@JoinColumn(name = "genre_id")
+	@JoinColumn(name = "genre_id") //determina a chave estrangeira na tabela tb_notification. 
 	private Genre genre;
-
+	
 	public Movie() {
+		
 	}
 
 	public Movie(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis) {
+		super();
 		this.id = id;
 		this.title = title;
 		this.subTitle = subTitle;
@@ -48,12 +50,12 @@ public class Movie implements Serializable {
 		this.synopsis = synopsis;
 	}
 
-	public Long getIdMovie() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long idMovie) {
-		this.id = idMovie;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -104,9 +106,16 @@ public class Movie implements Serializable {
 		return genre;
 	}
 
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
 	}
 
 	@Override
@@ -118,7 +127,15 @@ public class Movie implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Movie other = (Movie) obj;
-		return Objects.equals(id, other.id);
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
+	
+	
+	
 
 }

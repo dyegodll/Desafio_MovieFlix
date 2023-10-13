@@ -27,14 +27,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	//1-tela de login,2-Console H2 Test
 	private static final String[] PUBLIC = {"/oauth/token","/h2-console/**"};
 	
-	//endpoints para perfil OPERADOR ou ADMIN
-	//todas as rotas a partir de products e categories
-	private static final String[] OPERATOR_OR_ADMIN = {"/products/**","/categories/**"};
-
-	//enpoint específico perfil ADMIN
-	//todas as rotas a partir de users
-	private static final String[] ADMIN = {"/users/**"};
-	
 	//configura a decriptação do token vindo do client, analisando o secret, claims e a validade
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
@@ -51,12 +43,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 		//define autorizações das requisições por rota
 		http.authorizeRequests()
 				.antMatchers(PUBLIC).permitAll() //não exige login, público, rota principal, liberado pra todos os perfis
-					.antMatchers(HttpMethod.GET, OPERATOR_OR_ADMIN).permitAll() //liberado somente o verbo GET do HTTP para as rotas a partir de products e categories para todos 
-						.antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR","ADMIN") //rotas liberadas para quem tiver perfil de OPERATOR ou ADMIN
-		//.antMatchers(OPERATOR_OR_ADMIN).hasAnyRole("OPERATOR","ADMIN") OBS.: PARA CADASTRAR O PAPEL NO BD O SPRING EXIGE O PREFIXO 'ROLE_' (ROLE_ADMIN), PORÉM PARA DEFINIR NAS AUTORIZAÇÕES NÃO É NECESSÁRIO O PREFIXO
-							.antMatchers(ADMIN).hasRole("ADMIN")//rotas liberadas para quem tiver perfil de ADMIN (restringe a rota somente a esse tipo de perfil)
-		//para acesso a qualquer outra rota, o usuário deve estar logado não importa o perfil atribuído a ele
-								.anyRequest().authenticated();
+					.anyRequest().authenticated();
 		
 		//BANCO-H2 CONSOLE
 		//Quais os spring.profiles.active em execução?

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -61,8 +62,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.withClient(clientId) //define o id/nome do app que será usado pela aplicação web(LOGIN da APLICAÇÃO no Servidor) para acessar o backend | OBS.: NÃO LOGIN DO USUÁRIO
 		.secret(passwordEncoder.encode(clienSecret)) //senha de acesso a APLICAÇÃO já CRIPTOGRAFADA | OBS.: NÃO SENHA DO USUÁRIO
 		.scopes("read", "write") //acesso de leitura e escrita
-		.authorizedGrantTypes("password") //tipo de acesso/login
-		.accessTokenValiditySeconds(jwtDuration); //tempo de validação do token em segundos (nesse caso 24h)
+		.authorizedGrantTypes("password", "refresh_token") //tipo de acesso/login
+		.accessTokenValiditySeconds(jwtDuration) //tempo de validação do token em segundos (nesse caso 24h)
+		.refreshTokenValiditySeconds(jwtDuration); // 86400 segundos de token válido
 	}
 
 	//define quem vai autorizar e qual vai ser o formato do token (JWT)
