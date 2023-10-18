@@ -11,12 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import com.devsuperior.movieflix.entities.User;
 import com.devsuperior.movieflix.entities.dto.UserDTO;
 import com.devsuperior.movieflix.repositories.UserRepository;
-import com.devsuperior.movieflix.services.AuthService;
-import com.devsuperior.movieflix.services.UserService;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
 
 @Service

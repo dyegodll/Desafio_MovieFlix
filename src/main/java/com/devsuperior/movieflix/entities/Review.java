@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.devsuperior.movieflix.entities.User;
-
 @Entity
 @Table(name = "tb_review")  //Anotação que define o nome da tabela no banco de dados
 public class Review implements Serializable{

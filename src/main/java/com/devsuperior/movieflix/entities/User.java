@@ -24,8 +24,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.devsuperior.movieflix.entities.Role;
-
 @Entity
 @Table(name = "tb_user")  //Anotação que define o nome da tabela no banco de dados
 public class User implements UserDetails, Serializable{
