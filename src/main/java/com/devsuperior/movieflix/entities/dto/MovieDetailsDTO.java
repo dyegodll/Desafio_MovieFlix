@@ -1,42 +1,31 @@
-package com.devsuperior.movieflix.entities;
-
-import jakarta.persistence.*;
+package com.devsuperior.movieflix.entities.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
-@Entity
-@Table(name = "tb_movie")
-public class Movie implements Serializable {
+import com.devsuperior.movieflix.entities.Movie;
+
+public class MovieDetailsDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String subTitle;
-    
-    @Column(name = "movie_year")
     private Integer year;
     private String imgUrl;
-
-    @Column(columnDefinition = "TEXT")
     private String synopsis;
+    private GenreDTO genre;
 
-    @ManyToOne
-    @JoinColumn(name = "genre_id")
-    private Genre genre;
-
-    @OneToMany(mappedBy = "movie")
-    private List<Review> reviews = new ArrayList<>();
-
-    public Movie(){
-
+    public MovieDetailsDTO(Movie entity) {
+        id = entity.getId();
+        title = entity.getTitle();
+        subTitle = entity.getSubTitle();
+        year = entity.getYear();
+        imgUrl = entity.getImgUrl();
+        synopsis = entity.getSynopsis();
+        genre = new GenreDTO(entity.getGenre());
     }
 
-    public Movie(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis, Genre genre) {
+    public MovieDetailsDTO(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis, GenreDTO genre) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
@@ -94,28 +83,11 @@ public class Movie implements Serializable {
         this.synopsis = synopsis;
     }
 
-    public Genre getGenre() {
+    public GenreDTO getGenre() {
         return genre;
     }
 
-    public void setGenre(Genre genre) {
+    public void setGenre(GenreDTO genre) {
         this.genre = genre;
-    }
-
-    public List<Review> getReviews() {
-        return reviews;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return Objects.equals(id, movie.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

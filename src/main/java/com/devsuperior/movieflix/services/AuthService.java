@@ -1,14 +1,16 @@
 package com.devsuperior.movieflix.services;
 
+import static com.devsuperior.movieflix.constants.Constants.INVALID_USER;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.movieflix.entities.User;
 import com.devsuperior.movieflix.repositories.UserRepository;
-import com.devsuperior.movieflix.services.exceptions.ForbiddenException;
-import com.devsuperior.movieflix.services.exceptions.UnauthorizedException;
 
 @Service
 public class AuthService {
@@ -16,21 +18,15 @@ public class AuthService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Transactional(readOnly = true)
-	public User authenticated() {
+	protected User authenticated() {
 		try {
-			String username = SecurityContextHolder.getContext().getAuthentication().getName();
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
+			String username = jwtPrincipal.getClaim("username");
 			return userRepository.findByEmail(username);
-		} catch(Exception e) {
-			throw new UnauthorizedException("Invalid User");
+		}
+		catch (Exception e) {
+			throw new UsernameNotFoundException(INVALID_USER);
 		}
 	}
-	
-	public void validateSelfOrAdmin(Long userId) {
-		User user = authenticated();
-		if(!user.getId().equals(userId)) {
-			throw new ForbiddenException("Access denied");
-		}
-	}
-	
 }
